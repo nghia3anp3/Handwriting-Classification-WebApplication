@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Handwriting Digit Classification</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" href="templates/styles.css">
+    <!-- <link rel="stylesheet" href="templates/styles.css"> -->
+    <style>
+      .column.is-full {
+      display: flex;
+      justify-content: center; /* Căn giữa theo chiều ngang */
+      align-items: center; /* Căn giữa theo chiều dọc */
+      height: 76vh; /* Điều chỉnh chiều cao của cột */
+    }
+
+    .canvas-container {
+      text-align: center; /* Căn giữa theo chiều ngang */
+    }
+
+    #myCanvas {
+      /* Điều chỉnh kích thước của canvas theo ý muốn */
+      width: 300px;
+      height: 200px;
+    }
+
+    .site-wrapper {
+      
+      background-image: url('https://images6.alphacoders.com/132/1327974.png'); /* Đường dẫn đến hình nền */
+      background-size: cover; /* Hiển thị hình nền bằng cách căn giữa và tự động điều chỉnh kích thước */
+      background-repeat: no-repeat; /* Ngăn lặp lại hình nền */
+      background-attachment: fixed; /* Giữ hình nền tĩnh trong trường hợp cuộn trang */
+      background-color: rgba(255, 255, 255, 0);
+      /* Các thuộc tính khác của hình nền, ví dụ: background-position, background-color */
+    }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">      
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+      
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-start">
+            <a class="navbar-item">
+              Home
+            </a>
+      
+            <a class="navbar-item">
+              Model
+            </a>
+      
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                More
+              </a>
+      
+              <div class="navbar-dropdown">
+                <a class="navbar-item" href="https://www.facebook.com/nghia.lenguyentrong.7/">
+                   About Me
+                </a>
+                <hr class="navbar-divider">
+                <a class="navbar-item">
+                  Report an issue
+                </a>
+              </div>
+            </div>
+          </div>
+      
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="buttons">
+                <a class="button is-primary">
+                  Lê Nguyễn Trọng Nghĩa
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+        
+    
+        <div class="columns is-centered py-5">
+          <h1 class="is-family-monospace has-text-weight-light has-text-info is-size-3" id="result">Draw a number!! o~^^~o </h1>
+        </div>
+        <div class="site-wrapper">
+        <div class="column is-full">
+          <div class="canvas-container is-centered">
+            <canvas class="columns is-centererd" id="canvas" width="1400" height="500" style="border: 5px solid;"></canvas>
+          </div>
+        </div>
+
+
+            <div class="buttons is-centered">
+              <input class="button is-success is-danger is-focused" type="button" id="myButton" value="Predict">
+              <input class = "button is-success is-danger is-focused" type="button" id="clearButton" value="Clear">
+             </div>
+
+        <script src="static/jquery-3.7.1.min.js"></script>
+        <script src="static/index.js"></script>
+        <script type="text/javascript">
+            $("#myButton").click(function(){
+                $("#result").text('Predicting: ...');
+                var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+                var canvasObj = document.getElementById("canvas");
+                var img = canvasObj.toDataURL('image/jpeg');
+                $.ajax({
+                    type: "POST",
+                    url: $SCRIPT_ROOT + "/upload",
+                    data: img,
+                    success: function(data){
+                        $('#result').text('Predicted Output: '+data);
+                    }
+                });
+            });
+
+            $("#clearButton").click(function() {
+                $("#result").text('Draw a number!! o~^^~o');
+                var canvas = document.getElementById('canvas'),
+                    ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'white'; // Set canvas background to white
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            });
+        </script>
+        </div>
+  </body>
+</html>
